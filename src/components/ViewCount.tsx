@@ -40,7 +40,8 @@ function loadViews(): Promise<number | null> {
     document.head.appendChild(s);
   }
 
-  cache = fetch(`https://${code}.goatcounter.com/counter/TOTAL.json`)
+  // this is a single-page site, so the counter for "/" is the total (GoatCounter's TOTAL path did not aggregate for this account)
+  cache = fetch(`https://${code}.goatcounter.com/counter/${encodeURIComponent("/")}.json`)
     .then((r) => (r.ok ? r.json() : null))
     .then((d) => {
       const n = Number(String(d?.count ?? "").replace(/[^\d]/g, ""));
