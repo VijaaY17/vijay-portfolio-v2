@@ -9,7 +9,7 @@ export const profile = {
   linkedin: "https://linkedin.com/in/vijaay",
   github: "https://github.com/VijaaY17",
   resumeFile: "Vijay_R_SDE.pdf", // lives in /public
-  goatcounter: "", // your GoatCounter site code (the part before .goatcounter.com); empty hides the visitor count
+  goatcounter: "vijay-r", // your GoatCounter site code (the part before .goatcounter.com); empty hides the visitor count
   resume: `${import.meta.env.BASE_URL}Vijay_R_SDE.pdf`,
   // set to a path such as "/profile.jpg" (file in /public) to show a photo instead of the VR monogram
   photo: "" as string,

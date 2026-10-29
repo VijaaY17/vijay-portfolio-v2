@@ -86,7 +86,8 @@ export default function ViewCount() {
 
   if (views == null) return null;
 
-  const label = `${views.toLocaleString("en-IN")} visitors`;
+  const noun = views === 1 ? "visitor" : "visitors";
+  const label = `${views.toLocaleString("en-IN")} ${noun}`;
   return (
     <span
       role="img"
@@ -100,7 +101,7 @@ export default function ViewCount() {
       <span ref={ref} aria-hidden className="tabular-nums">
         {shown.toLocaleString("en-IN")}
       </span>
-      <span aria-hidden>visitors</span>
+      <span aria-hidden>{noun}</span>
     </span>
   );
 }
