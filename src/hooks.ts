@@ -3,6 +3,9 @@ import { useReducedMotion } from "motion/react";
 
 export type Theme = "light" | "dark";
 
+// the theme a switch is heading towards, so a second click during the cross-fade still flips it back
+let pendingTheme: Theme | null = null;
+
 export function useTheme() {
   const read = (): Theme => (document.documentElement.dataset.theme === "light" ? "light" : "dark");
   const [theme, setTheme] = useState<Theme>(read);
@@ -15,12 +18,31 @@ export function useTheme() {
   }, []);
 
   const toggle = () => {
-    const next: Theme = read() === "dark" ? "light" : "dark";
-    document.documentElement.dataset.theme = next;
-    try {
-      localStorage.setItem("theme", next);
-    } catch {
-      /* storage unavailable */
+    const root = document.documentElement;
+    const next: Theme = (pendingTheme ?? read()) === "dark" ? "light" : "dark";
+    pendingTheme = next;
+    const apply = () => {
+      root.dataset.theme = next;
+      try {
+        localStorage.setItem("theme", next);
+      } catch {
+        /* storage unavailable */
+      }
+    };
+
+    // Animating every element's colour at once is what made the switch janky. Turn those transitions off for the
+    // moment of the switch, and let the browser cross-fade the whole page as a single picture instead.
+    root.classList.add("theme-switching");
+    const done = () => {
+      if (pendingTheme === next) pendingTheme = null;
+      root.classList.remove("theme-switching");
+    };
+    const doc = document as Document & { startViewTransition?: (cb: () => void) => { finished: Promise<void> } };
+    if (doc.startViewTransition && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      doc.startViewTransition(apply).finished.then(done, done);
+    } else {
+      apply();
+      requestAnimationFrame(() => requestAnimationFrame(done));
     }
   };
   return { theme, toggle };

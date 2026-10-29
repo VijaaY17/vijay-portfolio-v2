@@ -284,6 +284,13 @@ button:focus-visible {
   96% { transform: scaleY(0.1); }
 }
 
+/* theme switch: no per-element colour fades while the page cross-fades, and a gap-free sun/moon swap */
+.theme-switching *, .theme-switching *::before, .theme-switching *::after { transition: none !important; }
+::view-transition-old(root), ::view-transition-new(root) { animation-duration: 0.22s; }
+.ic-swap { transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.2s; }
+[data-theme="dark"] .ic-moon, [data-theme="light"] .ic-sun { opacity: 0; transform: rotate(-90deg) scale(0.5); }
+[data-theme="dark"] .ic-sun, [data-theme="light"] .ic-moon { opacity: 1; transform: none; }
+
 @media (prefers-reduced-motion: reduce) {
   .eye-blink { animation: none; }
   .av-body, .av-eyes { animation: none; }

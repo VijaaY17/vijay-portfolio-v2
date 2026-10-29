@@ -62,16 +62,10 @@ export default function Nav() {
           <button
             onClick={toggle}
             aria-label={`Switch to ${theme === "dark" ? "light" : "dark"} theme`}
-            className="grid size-9 place-items-center rounded-md text-muted transition-all hover:bg-tile hover:text-fg active:scale-95"
+            className="relative grid size-9 place-items-center rounded-md text-muted transition-colors hover:bg-tile hover:text-fg active:scale-95"
           >
-            <motion.span
-              key={theme}
-              initial={{ rotate: -70, opacity: 0, scale: 0.7 }}
-              animate={{ rotate: 0, opacity: 1, scale: 1 }}
-              transition={{ duration: 0.3 }}
-            >
-              {theme === "dark" ? <Sun size={16} /> : <Moon size={16} />}
-            </motion.span>
+            <Sun size={16} aria-hidden className="ic-swap ic-sun absolute" />
+            <Moon size={16} aria-hidden className="ic-swap ic-moon absolute" />
           </button>
         </div>
       </div>
