@@ -51,7 +51,7 @@ function loadViews(): Promise<number | null> {
 }
 
 /** Eye icon plus a visitor count that counts up. Renders nothing when there is no real number to show. */
-export default function ViewCount({ variant }: { variant: "hero" | "footer" }) {
+export default function ViewCount() {
   const reduce = useReducedMotion();
   const ref = useRef<HTMLSpanElement>(null);
   const inView = useInView(ref, { once: true, margin: "-20px" });
@@ -86,37 +86,21 @@ export default function ViewCount({ variant }: { variant: "hero" | "footer" }) {
 
   if (views == null) return null;
 
-  const isSample = !profile.goatcounter;
   const label = `${views.toLocaleString("en-IN")} visitors`;
-  const body = (
-    <>
+  return (
+    <span
+      role="img"
+      aria-label={label}
+      title={profile.goatcounter ? label : "Design preview: sample number, hidden on the live site until a counter is connected"}
+      className="inline-flex items-center gap-1.5"
+    >
       <span className="eye-blink inline-flex" aria-hidden>
-        <Eye size={variant === "hero" ? 13 : 12} />
+        <Eye size={12} />
       </span>
       <span ref={ref} aria-hidden className="tabular-nums">
         {shown.toLocaleString("en-IN")}
       </span>
       <span aria-hidden>visitors</span>
-    </>
-  );
-
-  return variant === "hero" ? (
-    <span
-      role="img"
-      aria-label={label}
-      title={isSample ? "Design preview: sample number, hidden on the live site until a counter is connected" : label}
-      className="inline-flex items-center gap-1.5 rounded-full border border-line bg-tile/60 px-2.5 py-0.5 text-[11px]"
-    >
-      {body}
-    </span>
-  ) : (
-    <span
-      role="img"
-      aria-label={label}
-      title={isSample ? "Design preview: sample number, hidden on the live site until a counter is connected" : label}
-      className="inline-flex items-center gap-1.5"
-    >
-      {body}
     </span>
   );
 }

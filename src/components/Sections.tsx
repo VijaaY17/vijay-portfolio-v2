@@ -613,7 +613,7 @@ export function Footer(): ReactNode {
         <span>
           © {new Date().getFullYear()} {profile.name}
         </span>
-        <ViewCount variant="footer" />
+        <ViewCount />
       </span>
       <span className="hidden sm:inline">Built with React, Tailwind CSS and Motion</span>
       <a href="#top" className="group inline-flex items-center gap-1 transition-colors hover:text-fg">
