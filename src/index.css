@@ -277,7 +277,15 @@ button:focus-visible {
 }
 .glow-card:hover::before { opacity: 1; }
 
+/* view count: the eye blinks now and then */
+.eye-blink { animation: eye-blink 6s ease-in-out infinite; transform-origin: center; }
+@keyframes eye-blink {
+  0%, 92%, 100% { transform: scaleY(1); }
+  96% { transform: scaleY(0.1); }
+}
+
 @media (prefers-reduced-motion: reduce) {
+  .eye-blink { animation: none; }
   .av-body, .av-eyes { animation: none; }
   .av-pupils, .av-head { transform: none; transition: none; }
   .lamp-dust { animation: none; opacity: 0.5; }

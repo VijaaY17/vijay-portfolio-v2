@@ -4,6 +4,7 @@ import { ArrowUp, ArrowUpRight, Cable, Check, ChevronDown, Copy, Database, GitBr
 import { company, posts, profile, projects, roles, stack, type StackCategory, type StackItem } from "../content";
 import { useCycle } from "../hooks";
 import { Block, Heading, LiveDot, Tag, Tile } from "./ui";
+import ViewCount from "./ViewCount";
 
 const ease = [0.22, 1, 0.36, 1] as const;
 
@@ -608,8 +609,11 @@ export function Contact() {
 export function Footer(): ReactNode {
   return (
     <footer className="flex flex-wrap items-center justify-between gap-2 px-1 font-mono text-[11px] text-muted">
-      <span>
-        © {new Date().getFullYear()} {profile.name}
+      <span className="inline-flex items-center gap-3">
+        <span>
+          © {new Date().getFullYear()} {profile.name}
+        </span>
+        <ViewCount variant="footer" />
       </span>
       <span className="hidden sm:inline">Built with React, Tailwind CSS and Motion</span>
       <a href="#top" className="group inline-flex items-center gap-1 transition-colors hover:text-fg">

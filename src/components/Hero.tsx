@@ -4,6 +4,7 @@ import { Download, GitBranch, Mail, UserRound } from "lucide-react";
 import { company, profile } from "../content";
 import { useClock } from "../hooks";
 import AvatarFace from "./AvatarFace";
+import ViewCount from "./ViewCount";
 import { Block, Heading, LiveDot, Tile } from "./ui";
 
 /* ---- Animated cover: a perspective grid floor receding to a glowing horizon ---- */
@@ -277,6 +278,7 @@ export function Hero() {
           <span className="tabular-nums">
             {company.location} · {time}
           </span>
+          <ViewCount variant="hero" />
         </p>
 
         <p className="mt-4 text-[15px] leading-relaxed text-muted">{profile.summary}</p>
