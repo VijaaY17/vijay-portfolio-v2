@@ -1,0 +1,15 @@
+# dependencies and build output
+node_modules/
+dist/
+
+# editor / OS
+.vscode/
+.DS_Store
+Thumbs.db
+
+# local env files
+.env
+.env.*
+
+# source notes, not needed to build the site (contains personal contact details)
+resume.md
