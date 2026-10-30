@@ -43,6 +43,7 @@
 }
 
 html {
+  overflow-x: clip;
   scroll-behavior: smooth;
   scroll-padding-top: 5rem;
   color-scheme: light dark;
@@ -127,7 +128,7 @@ button:focus-visible {
   left: -80%;
   width: 260%;
   top: 0;
-  height: 320%;
+  height: 108%;
   transform: rotateX(68deg);
   transform-origin: 50% 0%;
 }
@@ -156,7 +157,7 @@ button:focus-visible {
 @keyframes fl-rush {
   0% { transform: translateY(0); opacity: 0; }
   12% { opacity: 0.9; }
-  100% { transform: translateY(520px); opacity: 0.9; }
+  100% { transform: translateY(118px); opacity: 0.9; }
 }
 .fl-streak-once {
   animation-iteration-count: 1;
@@ -182,7 +183,7 @@ button:focus-visible {
 @keyframes fl-sweep {
   0% { opacity: 0; transform: translateY(0); }
   10% { opacity: 1; }
-  100% { opacity: 0.9; transform: translateY(520px); }
+  100% { opacity: 0.9; transform: translateY(118px); }
 }
 
 .lamp-dust {

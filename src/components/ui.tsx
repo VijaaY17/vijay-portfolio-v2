@@ -24,8 +24,8 @@ export function Block({
       transition={{ duration: 0.6, ease }}
       className="relative w-full"
     >
-      <div aria-hidden className="dot-h pointer-events-none absolute left-[-2000px] right-[-2000px] top-0 z-10" />
-      <div aria-hidden className="dot-h pointer-events-none absolute bottom-0 left-[-2000px] right-[-2000px] z-10" />
+      <div aria-hidden className="dot-h pointer-events-none absolute left-1/2 top-0 z-10 w-screen -translate-x-1/2" />
+      <div aria-hidden className="dot-h pointer-events-none absolute bottom-0 left-1/2 z-10 w-screen -translate-x-1/2" />
       <div aria-hidden className="dot-v pointer-events-none absolute -bottom-3 -top-3 left-0 z-10 hidden md:block" />
       <div aria-hidden className="dot-v pointer-events-none absolute -bottom-3 -top-3 right-0 z-10 hidden md:block" />
       <i aria-hidden className={`${corner} -left-[1.5px] -top-[1.5px]`} />
