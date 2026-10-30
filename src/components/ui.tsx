@@ -32,7 +32,7 @@ export function Block({
       <i aria-hidden className={`${corner} -right-[1.5px] -top-[1.5px]`} />
       <i aria-hidden className={`${corner} -bottom-[1.5px] -left-[1.5px]`} />
       <i aria-hidden className={`${corner} -bottom-[1.5px] -right-[1.5px]`} />
-      <div className={`p-5 sm:p-6 ${className}`}>{children}</div>
+      <div className={`p-4 sm:p-6 ${className}`}>{children}</div>
     </motion.section>
   );
 }

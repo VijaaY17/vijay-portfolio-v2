@@ -43,6 +43,7 @@
 }
 
 html {
+  touch-action: manipulation;
   overflow-x: clip;
   scroll-behavior: smooth;
   scroll-padding-top: 5rem;

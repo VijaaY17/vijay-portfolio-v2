@@ -3,6 +3,7 @@ import Nav from "./components/Nav";
 import CommandPalette from "./components/CommandPalette";
 import { Hero } from "./components/Hero";
 import { Contact, Experience, Footer, Projects, Stack, Notes } from "./components/Sections";
+import DebugInfo from "./components/DebugInfo";
 
 export default function App() {
   return (
@@ -15,7 +16,8 @@ export default function App() {
       </a>
       <Nav />
       <CommandPalette />
-      <div className="page-in min-h-screen overflow-x-clip px-3 pb-10 pt-20 sm:px-5 sm:pt-24">
+      {new URLSearchParams(window.location.search).has("debug") && <DebugInfo />}
+      <div className="page-in min-h-screen overflow-x-clip px-0 pb-10 pt-20 sm:px-5 sm:pt-24">
         <main id="content" tabIndex={-1} className="mx-auto flex w-full max-w-2xl flex-col gap-5 outline-none">
           <Hero />
           <Experience />

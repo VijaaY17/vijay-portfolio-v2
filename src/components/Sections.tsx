@@ -608,7 +608,7 @@ export function Contact() {
 
 export function Footer(): ReactNode {
   return (
-    <footer className="flex flex-wrap items-center justify-between gap-2 px-1 font-mono text-[11px] text-muted">
+    <footer className="flex flex-wrap items-center justify-between gap-2 px-4 font-mono text-[11px] text-muted sm:px-1">
       <span className="inline-flex items-center gap-3">
         <span>
           © {new Date().getFullYear()} {profile.name}
