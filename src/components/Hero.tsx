@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, type CSSProperties, type PointerEvent } from "react";
-import { AnimatePresence, animate, motion, useInView, useReducedMotion } from "motion/react";
+import { animate, motion, useInView, useReducedMotion } from "motion/react";
 import { Download, Mail } from "lucide-react";
 import { company, profile } from "../content";
 import { useClock } from "../hooks";
@@ -130,18 +130,13 @@ function Banner() {
 
 const REACTIONS = ["🚀", "🔥", "✨", "☕", "❤️", "😄", "💻", "👏"];
 
-/** Illustrated profile tile. Eyes follow the cursor; hover waves hello; click makes it grin and floats emoji up. */
+/** Illustrated profile tile. Eyes follow the cursor, it grins on hover, and a click makes it wink and float emoji up. */
 function Avatar() {
   const reduce = useReducedMotion();
   const root = useRef<HTMLDivElement>(null);
   const nextId = useRef(0);
   const happyTimer = useRef<number>(0);
-  const [hover, setHover] = useState(false);
   const [happy, setHappy] = useState(false);
-  const [greet, setGreet] = useState(false);
-  const inView = useInView(root, { once: true });
-  const touched = useRef(false);
-  const coarse = typeof window !== "undefined" && window.matchMedia("(pointer: coarse)").matches;
   const [burst, setBurst] = useState<{ id: number; ch: string; dx: number; dy: number; rot: number; delay: number }[]>([]);
 
   useEffect(() => {
@@ -166,34 +161,7 @@ function Avatar() {
     };
   }, [reduce]);
 
-  // A calm hello, once per visit: a small bubble appears for a few seconds, then goes away for good.
-  // It stands down as soon as the visitor interacts with the avatar themselves.
-  const markGreeted = () => {
-    touched.current = true;
-    setGreet(false);
-    try {
-      sessionStorage.setItem("greeted", "1");
-    } catch {
-      /* storage unavailable */
-    }
-  };
-  useEffect(() => {
-    if (!inView) return;
-    try {
-      if (sessionStorage.getItem("greeted") === "1") return;
-    } catch {
-      /* storage unavailable */
-    }
-    const show = window.setTimeout(() => !touched.current && setGreet(true), 1600);
-    const hide = window.setTimeout(() => markGreeted(), 1600 + 4500);
-    return () => {
-      window.clearTimeout(show);
-      window.clearTimeout(hide);
-    };
-  }, [inView]);
-
   const onClick = () => {
-    markGreeted();
     setHappy(true);
     window.clearTimeout(happyTimer.current);
     happyTimer.current = window.setTimeout(() => setHappy(false), 1100);
@@ -222,13 +190,6 @@ function Avatar() {
           onClick();
         }
       }}
-      onFocus={() => setHover(true)}
-      onBlur={() => setHover(false)}
-      onPointerEnter={() => {
-        setHover(true);
-        markGreeted();
-      }}
-      onPointerLeave={() => setHover(false)}
       onClick={onClick}
       className={`av relative size-[88px] cursor-pointer select-none sm:size-24 ${happy ? "is-happy" : ""}`}
     >
@@ -252,28 +213,6 @@ function Avatar() {
 
       {/* emoji layer */}
       <div aria-hidden className="pointer-events-none absolute inset-0 z-20">
-        <AnimatePresence>
-          {(hover || greet) && !happy && (
-            <motion.span
-              key="hi"
-              initial={{ opacity: 0, x: -6, scale: 0.94 }}
-              animate={{ opacity: 1, x: 0, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.96, transition: { duration: 0.18 } }}
-              transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
-              className="absolute left-full top-2 ml-2.5 whitespace-nowrap rounded-xl border border-line bg-bg px-2.5 py-1.5 font-mono text-[11px] shadow-sm"
-            >
-              <span aria-hidden className="absolute -left-1 top-3 size-2 rotate-45 border-b border-l border-line bg-bg" />
-              Hi! {coarse ? "Tap" : "Click"} me{" "}
-              <motion.span
-                animate={reduce ? undefined : { rotate: [0, 16, -8, 12, 0] }}
-                transition={{ duration: 1, delay: 0.35 }}
-                style={{ display: "inline-block", transformOrigin: "70% 80%" }}
-              >
-                👋
-              </motion.span>
-            </motion.span>
-          )}
-        </AnimatePresence>
         {burst.map((b) => (
           <motion.span
             key={b.id}
