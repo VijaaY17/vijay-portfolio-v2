@@ -1,11 +1,12 @@
 import { useEffect, useRef, useState, type CSSProperties, type PointerEvent, type ReactNode } from "react";
 import { AnimatePresence, motion, useInView, useReducedMotion } from "motion/react";
-import { ArrowUp, ArrowUpRight, Cable, Check, ChevronDown, Copy, Database, GitBranch, Mail, MousePointer2, UserRound, Webhook } from "lucide-react";
+import { ArrowUp, ArrowUpRight, Cable, Check, ChevronDown, Copy, Database, Mail, MousePointer2, Webhook } from "lucide-react";
 import { company, posts, profile, projects, roles, stack, type StackCategory, type StackItem } from "../content";
 import { useCycle } from "../hooks";
 import { Block, Heading, LiveDot, Tag, Tile } from "./ui";
 import ViewCount from "./ViewCount";
 import { mailtoHref, openEmail } from "../mail";
+import { GitHubIcon, LinkedInIcon } from "./BrandIcons";
 
 const ease = [0.22, 1, 0.36, 1] as const;
 
@@ -517,8 +518,8 @@ export function Contact() {
   };
 
   const socials = [
-    { href: profile.github, label: "GitHub", handle: "VijaaY17", icon: GitBranch },
-    { href: profile.linkedin, label: "LinkedIn", handle: "in/vijaay", icon: UserRound },
+    { href: profile.github, label: "GitHub", handle: "VijaaY17", icon: GitHubIcon },
+    { href: profile.linkedin, label: "LinkedIn", handle: "in/vijaay", icon: LinkedInIcon },
   ];
 
   return (

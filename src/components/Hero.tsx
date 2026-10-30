@@ -1,10 +1,11 @@
 import { useEffect, useRef, useState, type CSSProperties, type PointerEvent } from "react";
 import { AnimatePresence, animate, motion, useInView, useReducedMotion } from "motion/react";
-import { Download, GitBranch, Mail, UserRound } from "lucide-react";
+import { Download, Mail } from "lucide-react";
 import { company, profile } from "../content";
 import { useClock } from "../hooks";
 import AvatarFace from "./AvatarFace";
 import { mailtoHref, openEmail } from "../mail";
+import { GitHubIcon, LinkedInIcon } from "./BrandIcons";
 import { Block, Heading, LiveDot, Tile } from "./ui";
 
 /* ---- Animated cover: a perspective grid floor receding to a glowing horizon ---- */
@@ -282,33 +283,32 @@ export function Hero() {
 
         <p className="mt-4 text-[15px] leading-relaxed text-muted">{profile.summary}</p>
 
-        <div className="mt-5 flex flex-wrap items-center gap-2">
+        <div className="mt-5 grid grid-cols-3 gap-2 sm:flex sm:flex-wrap sm:items-center">
           <a
             href={mailtoHref}
             onClick={openEmail}
-            className="inline-flex h-9 items-center gap-1.5 rounded-lg bg-fg px-3 text-[13px] font-medium sm:gap-2 sm:px-3.5 sm:text-sm text-bg transition-all hover:opacity-85 active:scale-[0.98]"
+            className="col-span-3 inline-flex h-10 items-center justify-center gap-2 rounded-lg bg-fg px-3.5 text-sm font-medium text-bg transition-all hover:opacity-85 active:scale-[0.98] sm:h-9 sm:justify-start"
           >
             <Mail size={15} aria-hidden /> Email me
           </a>
           {[
-            { href: profile.github, label: "GitHub", icon: GitBranch },
-            { href: profile.linkedin, label: "LinkedIn", icon: UserRound },
+            { href: profile.github, label: "GitHub", icon: GitHubIcon },
+            { href: profile.linkedin, label: "LinkedIn", icon: LinkedInIcon },
           ].map(({ href, label, icon: Icon }) => (
             <a
               key={label}
               href={href}
               target="_blank"
               rel="noreferrer"
-              aria-label={label}
-              className="inline-flex h-9 items-center gap-1.5 rounded-lg border border-tileb bg-tile px-3 text-[13px] sm:gap-2 sm:px-3.5 sm:text-sm transition-all hover:border-tile2b hover:bg-tile2 active:scale-[0.98]"
+              className="inline-flex h-10 items-center justify-center gap-1.5 rounded-lg border border-tileb bg-tile px-2 text-[13px] transition-all hover:border-tile2b hover:bg-tile2 active:scale-[0.98] sm:h-9 sm:justify-start sm:gap-2 sm:px-3.5 sm:text-sm"
             >
-              <Icon size={15} aria-hidden /> <span className="hidden sm:inline">{label}</span>
+              <Icon size={15} /> {label}
             </a>
           ))}
           <a
             href={profile.resume}
             download={profile.resumeFile}
-            className="inline-flex h-9 items-center gap-1.5 rounded-lg border border-tileb bg-tile px-3 text-[13px] transition-all hover:border-tile2b hover:bg-tile2 active:scale-[0.98] sm:gap-2 sm:px-3.5 sm:text-sm"
+            className="inline-flex h-10 items-center justify-center gap-1.5 rounded-lg border border-tileb bg-tile px-2 text-[13px] transition-all hover:border-tile2b hover:bg-tile2 active:scale-[0.98] sm:h-9 sm:justify-start sm:gap-2 sm:px-3.5 sm:text-sm"
           >
             <Download size={15} aria-hidden /> Resume
           </a>

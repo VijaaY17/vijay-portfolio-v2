@@ -1,11 +1,10 @@
-import { useCallback, useEffect, useMemo, useRef, useState, type KeyboardEvent } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, type ComponentType, type KeyboardEvent } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import {
   Briefcase,
   CornerDownLeft,
   Download,
   FolderGit2,
-  GitBranch,
   Home,
   Layers,
   Mail,
@@ -15,18 +14,18 @@ import {
   Search,
   Send,
   Sun,
-  UserRound,
   type LucideIcon,
 } from "lucide-react";
 import { profile } from "../content";
 import { useTheme } from "../hooks";
 import { openEmail } from "../mail";
+import { GitHubIcon, LinkedInIcon } from "./BrandIcons";
 
 type Cmd = {
   id: string;
   label: string;
   group: "Go to" | "Actions";
-  icon: LucideIcon;
+  icon: LucideIcon | ComponentType<{ size?: number; className?: string }>;
   keywords?: string;
   run: () => void;
 };
@@ -95,8 +94,8 @@ export default function CommandPalette() {
         },
       },
       { id: "mail", label: "Send an email", group: "Actions", icon: Mail, keywords: "write message", run: () => openEmail() },
-      { id: "github", label: "Open GitHub", group: "Actions", icon: GitBranch, keywords: "code repos", run: () => window.open(profile.github, "_blank", "noreferrer") },
-      { id: "linkedin", label: "Open LinkedIn", group: "Actions", icon: UserRound, keywords: "profile network", run: () => window.open(profile.linkedin, "_blank", "noreferrer") },
+      { id: "github", label: "Open GitHub", group: "Actions", icon: GitHubIcon, keywords: "code repos", run: () => window.open(profile.github, "_blank", "noreferrer") },
+      { id: "linkedin", label: "Open LinkedIn", group: "Actions", icon: LinkedInIcon, keywords: "profile network", run: () => window.open(profile.linkedin, "_blank", "noreferrer") },
       {
         id: "theme",
         label: theme === "dark" ? "Switch to light theme" : "Switch to dark theme",
