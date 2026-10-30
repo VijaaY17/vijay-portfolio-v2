@@ -4,6 +4,7 @@ import { Download, GitBranch, Mail, UserRound } from "lucide-react";
 import { company, profile } from "../content";
 import { useClock } from "../hooks";
 import AvatarFace from "./AvatarFace";
+import { mailtoHref, openEmail } from "../mail";
 import { Block, Heading, LiveDot, Tile } from "./ui";
 
 /* ---- Animated cover: a perspective grid floor receding to a glowing horizon ---- */
@@ -283,7 +284,8 @@ export function Hero() {
 
         <div className="mt-5 flex flex-wrap items-center gap-2">
           <a
-            href={`mailto:${profile.email}`}
+            href={mailtoHref}
+            onClick={openEmail}
             className="inline-flex h-9 items-center gap-1.5 rounded-lg bg-fg px-3 text-[13px] font-medium sm:gap-2 sm:px-3.5 sm:text-sm text-bg transition-all hover:opacity-85 active:scale-[0.98]"
           >
             <Mail size={15} aria-hidden /> Email me

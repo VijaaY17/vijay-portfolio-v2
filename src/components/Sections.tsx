@@ -5,6 +5,7 @@ import { company, posts, profile, projects, roles, stack, type StackCategory, ty
 import { useCycle } from "../hooks";
 import { Block, Heading, LiveDot, Tag, Tile } from "./ui";
 import ViewCount from "./ViewCount";
+import { mailtoHref, openEmail } from "../mail";
 
 const ease = [0.22, 1, 0.36, 1] as const;
 
@@ -501,7 +502,7 @@ export function Contact() {
       await navigator.clipboard.writeText(profile.email);
     } catch {
       // clipboard unavailable (insecure context or blocked): fall back to a mail draft
-      window.location.href = `mailto:${profile.email}`;
+      openEmail();
       return;
     }
     setCopied(true);
@@ -563,7 +564,8 @@ export function Contact() {
             </AnimatePresence>
           </button>
           <a
-            href={`mailto:${profile.email}`}
+            href={mailtoHref}
+            onClick={openEmail}
             className="group inline-flex h-9 items-center gap-1.5 rounded-lg bg-fg px-3.5 text-sm font-medium text-bg transition-all hover:opacity-85 active:scale-[0.98]"
           >
             Send email

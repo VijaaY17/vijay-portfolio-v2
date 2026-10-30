@@ -20,6 +20,7 @@ import {
 } from "lucide-react";
 import { profile } from "../content";
 import { useTheme } from "../hooks";
+import { openEmail } from "../mail";
 
 type Cmd = {
   id: string;
@@ -89,11 +90,11 @@ export default function CommandPalette() {
             await navigator.clipboard.writeText(profile.email);
             say("Email copied");
           } catch {
-            window.location.href = `mailto:${profile.email}`;
+            openEmail();
           }
         },
       },
-      { id: "mail", label: "Send an email", group: "Actions", icon: Mail, keywords: "write message", run: () => (window.location.href = `mailto:${profile.email}`) },
+      { id: "mail", label: "Send an email", group: "Actions", icon: Mail, keywords: "write message", run: () => openEmail() },
       { id: "github", label: "Open GitHub", group: "Actions", icon: GitBranch, keywords: "code repos", run: () => window.open(profile.github, "_blank", "noreferrer") },
       { id: "linkedin", label: "Open LinkedIn", group: "Actions", icon: UserRound, keywords: "profile network", run: () => window.open(profile.linkedin, "_blank", "noreferrer") },
       {
