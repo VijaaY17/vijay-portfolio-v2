@@ -20,6 +20,13 @@ export function openEmail(e?: MouseEvent) {
     return; // a link click falls through to the normal mailto: href
   }
   e?.preventDefault();
-  const w = window.open(gmailComposeHref, "_blank", "noopener,noreferrer");
-  if (!w) window.location.href = mailtoHref; // pop-up blocked: fall back to the mail app
+  // Open through a link click. (window.open with "noopener" always returns null, which looks like a blocked
+  // pop-up and used to trigger the mailto: fallback at the same time as Gmail opened.)
+  const a = document.createElement("a");
+  a.href = gmailComposeHref;
+  a.target = "_blank";
+  a.rel = "noopener noreferrer";
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
 }
