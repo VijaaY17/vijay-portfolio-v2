@@ -1,5 +1,6 @@
-import { motion } from "motion/react";
-import { Briefcase, FolderGit2, House, Layers, Mail, Moon, PenLine, Search, Sun } from "lucide-react";
+import { useEffect, useState } from "react";
+import { AnimatePresence, motion } from "motion/react";
+import { Moon, Search, Sun } from "lucide-react";
 import { useActiveSection, useTheme } from "../hooks";
 import AvatarFace from "./AvatarFace";
 import { OPEN_PALETTE } from "./CommandPalette";
@@ -7,22 +8,29 @@ import { OPEN_PALETTE } from "./CommandPalette";
 const isMac = typeof navigator !== "undefined" && /mac/i.test(navigator.platform);
 
 const links = [
-  { id: "top", label: "Home", Icon: House },
-  { id: "experience", label: "Experience", Icon: Briefcase },
-  { id: "projects", label: "Projects", Icon: FolderGit2 },
-  { id: "notes", label: "Notes", Icon: PenLine },
-  { id: "stack", label: "Stack", Icon: Layers },
-  { id: "contact", label: "Contact", Icon: Mail },
+  { id: "top", label: "Home" },
+  { id: "experience", label: "Experience" },
+  { id: "projects", label: "Projects" },
+  { id: "notes", label: "Notes" },
+  { id: "stack", label: "Stack" },
+  { id: "contact", label: "Contact" },
 ];
 const ids = links.map((l) => l.id);
 
 export default function Nav() {
   const { theme, toggle } = useTheme();
   const active = useActiveSection(ids);
+  const [open, setOpen] = useState(false);
+
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && setOpen(false);
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [open]);
 
   return (
-    <>
-      <header className="fixed inset-x-0 top-0 z-50 border-b border-dashed border-dot bg-bg/80 backdrop-blur-md">
+    <header className="fixed inset-x-0 top-0 z-50 border-b border-dashed border-dot bg-bg/80 backdrop-blur-md">
       <div className="mx-auto flex h-12 w-full max-w-2xl items-center justify-between px-4 md:border-x md:border-dashed md:border-dot">
         <a
           href="#top"
@@ -31,6 +39,22 @@ export default function Nav() {
         >
           <AvatarFace decorative />
         </a>
+        <div className="ml-2.5 mr-auto flex min-w-0 items-baseline gap-1.5 text-sm sm:hidden" aria-hidden>
+          <span className="font-semibold">Vijay R</span>
+          <span className="text-muted">/</span>
+          <AnimatePresence mode="wait" initial={false}>
+            <motion.span
+              key={active}
+              initial={{ opacity: 0, y: 5 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -5 }}
+              transition={{ duration: 0.16 }}
+              className="truncate text-muted"
+            >
+              {links.find((l) => l.id === active)?.label ?? "Home"}
+            </motion.span>
+          </AnimatePresence>
+        </div>
         <div className="flex items-center gap-2 sm:gap-5">
           <nav aria-label="Primary" className="hidden items-center gap-5 text-sm sm:flex">
             {links.map((l) => (
@@ -68,40 +92,57 @@ export default function Nav() {
             <Sun size={16} aria-hidden className="ic-swap ic-sun absolute" />
             <Moon size={16} aria-hidden className="ic-swap ic-moon absolute" />
           </button>
+          <div className="relative sm:hidden">
+            <button
+              onClick={() => setOpen((o) => !o)}
+              aria-label={open ? "Close menu" : "Open menu"}
+              aria-expanded={open}
+              aria-controls="mobile-menu"
+              className="grid size-9 place-items-center rounded-md text-fg transition-colors hover:bg-tile active:scale-95"
+            >
+              <span className="relative block h-2.5 w-[18px]" aria-hidden>
+                <span className={`absolute left-0 h-px w-full bg-current transition-all duration-300 ${open ? "top-1/2 rotate-45" : "top-0"}`} />
+                <span className={`absolute left-0 h-px w-full bg-current transition-all duration-300 ${open ? "top-1/2 -rotate-45" : "bottom-0"}`} />
+              </span>
+            </button>
+            <AnimatePresence>
+              {open && (
+                <>
+                  <div className="fixed inset-0 -z-10" onClick={() => setOpen(false)} aria-hidden />
+                  <motion.nav
+                    id="mobile-menu"
+                    aria-label="Sections"
+                    initial={{ opacity: 0, scale: 0.94, y: -6 }}
+                    animate={{ opacity: 1, scale: 1, y: 0 }}
+                    exit={{ opacity: 0, scale: 0.94, y: -6 }}
+                    transition={{ duration: 0.16, ease: [0.22, 1, 0.36, 1] }}
+                    style={{ transformOrigin: "top right" }}
+                    className="absolute right-0 top-11 w-52 rounded-xl border border-tile2b bg-bg p-1.5 shadow-[0_12px_40px_rgba(0,0,0,0.25)]"
+                  >
+                    {links.map((l) => {
+                      const on = active === l.id;
+                      return (
+                        <a
+                          key={l.id}
+                          href={`#${l.id}`}
+                          onClick={() => setOpen(false)}
+                          aria-current={on ? "true" : undefined}
+                          className={`flex items-center justify-between rounded-lg px-3 py-2.5 text-[15px] transition-colors active:bg-tile ${
+                            on ? "bg-tile font-semibold text-fg" : "text-muted"
+                          }`}
+                        >
+                          {l.label}
+                          {on && <span className="size-1.5 rounded-full bg-fg" aria-hidden />}
+                        </a>
+                      );
+                    })}
+                  </motion.nav>
+                </>
+              )}
+            </AnimatePresence>
+          </div>
         </div>
       </div>
     </header>
-    <nav
-      aria-label="Sections"
-      className="fixed inset-x-0 bottom-0 z-50 flex justify-center px-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] sm:hidden"
-    >
-      <div className="flex items-center gap-0.5 rounded-full border border-tile2b bg-bg/80 p-1 shadow-[0_8px_30px_rgba(0,0,0,0.35)] backdrop-blur-xl">
-        {links.map(({ id, label, Icon }) => {
-          const on = active === id;
-          return (
-            <a
-              key={id}
-              href={`#${id}`}
-              aria-label={label}
-              aria-current={on ? "true" : undefined}
-              className={`relative flex h-10 items-center justify-center gap-1.5 rounded-full px-3 text-xs font-medium transition-colors active:scale-95 ${
-                on ? "text-bg" : "text-muted"
-              }`}
-            >
-              {on && (
-                <motion.span
-                  layoutId="dock-pill"
-                  className="absolute inset-0 rounded-full bg-fg"
-                  transition={{ type: "spring", stiffness: 500, damping: 36 }}
-                />
-              )}
-              <Icon size={17} aria-hidden className="relative" />
-              {on && <span className="relative">{label}</span>}
-            </a>
-          );
-        })}
-      </div>
-    </nav>
-    </>
   );
 }
