@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, type CSSProperties, type PointerEvent } from "react";
-import { animate, motion, useInView, useReducedMotion } from "motion/react";
+import { motion, useInView, useMotionTemplate, useMotionValue, useReducedMotion, useSpring, useTransform } from "motion/react";
 import { Download, Mail } from "lucide-react";
 import { company, profile } from "../content";
 import { useClock } from "../hooks";
@@ -137,6 +137,75 @@ function Avatar() {
   const nextId = useRef(0);
   const happyTimer = useRef<number>(0);
   const [happy, setHappy] = useState(false);
+
+  // 3D tilt toward the pointer (mouse hover or a finger dragging on the avatar), with a glare that follows it
+  const mx = useMotionValue(0);
+  const my = useMotionValue(0);
+  const spring = { stiffness: 220, damping: 20, mass: 0.5 };
+  const rotY = useSpring(useTransform(mx, [-0.5, 0.5], [-16, 16]), spring);
+  const rotX = useSpring(useTransform(my, [-0.5, 0.5], [16, -16]), spring);
+  const shiftX = useSpring(useTransform(mx, [-0.5, 0.5], [-4, 4]), spring);
+  const shiftY = useSpring(useTransform(my, [-0.5, 0.5], [-3, 3]), spring);
+  const glareX = useTransform(mx, [-0.5, 0.5], [15, 85]);
+  const glareY = useTransform(my, [-0.5, 0.5], [10, 90]);
+  const glareOpacity = useSpring(0, { stiffness: 200, damping: 24 });
+  const glare = useMotionTemplate`radial-gradient(circle at ${glareX}% ${glareY}%, rgba(255,255,255,0.55), rgba(255,255,255,0) 58%)`;
+  const stopIntro = useRef<() => void>(() => {});
+  const seen = useInView(root, { once: true, amount: 0.6 });
+
+  // On landing: one quick 3D "hello" sweep with the light gliding across, then a wink.
+  useEffect(() => {
+    if (!seen || reduce) return;
+    const X = { t: [0, 0.25, 0.62, 0.85, 1], v: [0, -0.5, 0.5, -0.2, 0] };
+    const Y = { t: [0, 0.33, 0.66, 1], v: [0, -0.12, 0.08, 0] };
+    const at = (k: { t: number[]; v: number[] }, p: number) => {
+      let i = 1;
+      while (i < k.t.length - 1 && p > k.t[i]) i++;
+      const u = Math.min(1, Math.max(0, (p - k.t[i - 1]) / (k.t[i] - k.t[i - 1])));
+      const e = u < 0.5 ? 2 * u * u : 1 - Math.pow(-2 * u + 2, 2) / 2; // ease in-out per segment
+      return k.v[i - 1] + (k.v[i] - k.v[i - 1]) * e;
+    };
+    let raf = 0;
+    let t0 = 0;
+    const DUR = 1700;
+    const tick = (now: number) => {
+      t0 ||= now;
+      const p = Math.min(1, (now - t0) / DUR);
+      mx.set(at(X, p));
+      my.set(at(Y, p));
+      if (p < 1) {
+        raf = requestAnimationFrame(tick);
+        return;
+      }
+      glareOpacity.set(0);
+      setHappy(true);
+      window.clearTimeout(happyTimer.current);
+      happyTimer.current = window.setTimeout(() => setHappy(false), 1000);
+    };
+    const start = window.setTimeout(() => {
+      glareOpacity.set(1);
+      raf = requestAnimationFrame(tick);
+    }, 700);
+    stopIntro.current = () => {
+      window.clearTimeout(start);
+      cancelAnimationFrame(raf);
+    };
+    return stopIntro.current;
+  }, [seen, reduce, mx, my, glareOpacity]);
+
+  const tilt = (e: PointerEvent<HTMLDivElement>) => {
+    if (reduce) return;
+    stopIntro.current(); // the visitor took over
+    const r = e.currentTarget.getBoundingClientRect();
+    mx.set((e.clientX - r.left) / r.width - 0.5);
+    my.set((e.clientY - r.top) / r.height - 0.5);
+    glareOpacity.set(1);
+  };
+  const untilt = () => {
+    mx.set(0);
+    my.set(0);
+    glareOpacity.set(0);
+  };
   const [burst, setBurst] = useState<{ id: number; ch: string; dx: number; dy: number; rot: number; delay: number }[]>([]);
 
   useEffect(() => {
@@ -191,11 +260,17 @@ function Avatar() {
         }
       }}
       onClick={onClick}
-      className={`av relative size-[88px] cursor-pointer select-none sm:size-24 ${happy ? "is-happy" : ""}`}
+      onPointerMove={tilt}
+      onPointerDown={tilt}
+      onPointerLeave={untilt}
+      onPointerUp={(e) => e.pointerType !== "mouse" && untilt()}
+      onPointerCancel={untilt}
+      className={`av relative size-[88px] cursor-pointer select-none touch-none sm:size-24 ${happy ? "is-happy" : ""}`}
     >
       <motion.div
         className="size-full"
-        whileHover={reduce ? undefined : { scale: 1.07, rotate: -3 }}
+        style={reduce ? undefined : { rotateX: rotX, rotateY: rotY, transformPerspective: 520 }}
+        whileHover={reduce ? undefined : { scale: 1.06 }}
         whileTap={reduce ? undefined : { scale: 0.96 }}
         animate={happy && !reduce ? { rotate: [0, -7, 7, -3, 0] } : undefined}
         transition={{ type: "spring", stiffness: 320, damping: 16 }}
@@ -205,9 +280,18 @@ function Avatar() {
             {profile.photo ? (
               <img src={profile.photo} alt={profile.name} className="size-full object-cover" />
             ) : (
-              <AvatarFace />
+              <motion.div className="size-full" style={reduce ? undefined : { x: shiftX, y: shiftY, scale: 1.04 }}>
+                <AvatarFace />
+              </motion.div>
             )}
           </div>
+          {!reduce && (
+            <motion.span
+              aria-hidden
+              style={{ background: glare, opacity: glareOpacity }}
+              className="pointer-events-none absolute inset-0 rounded-[17px] mix-blend-soft-light"
+            />
+          )}
         </Tile>
       </motion.div>
 
