@@ -1,5 +1,5 @@
 import { motion } from "motion/react";
-import { Moon, Search, Sun } from "lucide-react";
+import { Briefcase, FolderGit2, House, Layers, Mail, Moon, PenLine, Search, Sun } from "lucide-react";
 import { useActiveSection, useTheme } from "../hooks";
 import AvatarFace from "./AvatarFace";
 import { OPEN_PALETTE } from "./CommandPalette";
@@ -7,12 +7,12 @@ import { OPEN_PALETTE } from "./CommandPalette";
 const isMac = typeof navigator !== "undefined" && /mac/i.test(navigator.platform);
 
 const links = [
-  { id: "top", label: "Home" },
-  { id: "experience", label: "Experience" },
-  { id: "projects", label: "Projects" },
-  { id: "notes", label: "Notes" },
-  { id: "stack", label: "Stack" },
-  { id: "contact", label: "Contact" },
+  { id: "top", label: "Home", Icon: House },
+  { id: "experience", label: "Experience", Icon: Briefcase },
+  { id: "projects", label: "Projects", Icon: FolderGit2 },
+  { id: "notes", label: "Notes", Icon: PenLine },
+  { id: "stack", label: "Stack", Icon: Layers },
+  { id: "contact", label: "Contact", Icon: Mail },
 ];
 const ids = links.map((l) => l.id);
 
@@ -21,7 +21,8 @@ export default function Nav() {
   const active = useActiveSection(ids);
 
   return (
-    <header className="fixed inset-x-0 top-0 z-50 border-b border-dashed border-dot bg-bg/80 backdrop-blur-md">
+    <>
+      <header className="fixed inset-x-0 top-0 z-50 border-b border-dashed border-dot bg-bg/80 backdrop-blur-md">
       <div className="mx-auto flex h-12 w-full max-w-2xl items-center justify-between px-4 md:border-x md:border-dashed md:border-dot">
         <a
           href="#top"
@@ -31,12 +32,12 @@ export default function Nav() {
           <AvatarFace decorative />
         </a>
         <div className="flex items-center gap-2 sm:gap-5">
-          <nav aria-label="Primary" className="flex items-center gap-2.5 text-[12px] sm:gap-5 sm:text-sm">
+          <nav aria-label="Primary" className="hidden items-center gap-5 text-sm sm:flex">
             {links.map((l) => (
               <a
                 key={l.id}
                 href={`#${l.id}`}
-                className={`relative py-1 transition-colors ${l.id === "top" ? "hidden sm:inline-block" : ""} ${
+                className={`relative py-1 transition-colors ${
                   active === l.id ? "font-semibold text-fg" : "text-muted hover:text-fg"
                 }`}
               >
@@ -70,5 +71,37 @@ export default function Nav() {
         </div>
       </div>
     </header>
+    <nav
+      aria-label="Sections"
+      className="fixed inset-x-0 bottom-0 z-50 flex justify-center px-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] sm:hidden"
+    >
+      <div className="flex items-center gap-0.5 rounded-full border border-tile2b bg-bg/80 p-1 shadow-[0_8px_30px_rgba(0,0,0,0.35)] backdrop-blur-xl">
+        {links.map(({ id, label, Icon }) => {
+          const on = active === id;
+          return (
+            <a
+              key={id}
+              href={`#${id}`}
+              aria-label={label}
+              aria-current={on ? "true" : undefined}
+              className={`relative flex h-10 items-center justify-center gap-1.5 rounded-full px-3 text-xs font-medium transition-colors active:scale-95 ${
+                on ? "text-bg" : "text-muted"
+              }`}
+            >
+              {on && (
+                <motion.span
+                  layoutId="dock-pill"
+                  className="absolute inset-0 rounded-full bg-fg"
+                  transition={{ type: "spring", stiffness: 500, damping: 36 }}
+                />
+              )}
+              <Icon size={17} aria-hidden className="relative" />
+              {on && <span className="relative">{label}</span>}
+            </a>
+          );
+        })}
+      </div>
+    </nav>
+    </>
   );
 }

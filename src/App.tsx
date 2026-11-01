@@ -17,7 +17,7 @@ export default function App() {
       <Nav />
       <CommandPalette />
       {new URLSearchParams(window.location.search).has("debug") && <DebugInfo />}
-      <div className="page-in min-h-screen overflow-x-clip px-0 pb-10 pt-20 sm:px-5 sm:pt-24">
+      <div className="page-in min-h-screen overflow-x-clip px-0 pb-24 pt-20 sm:px-5 sm:pb-10 sm:pt-24">
         <main id="content" tabIndex={-1} className="mx-auto flex w-full max-w-2xl flex-col gap-5 outline-none">
           <Hero />
           <Experience />
